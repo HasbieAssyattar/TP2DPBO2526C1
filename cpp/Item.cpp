@@ -1,21 +1,17 @@
-#pragma once
-#ifndef ITEM_H
-#define ITEM_H
-
 #include <bits/stdc++.h>
 
 using namespace std;
 
-// Kelas Item sebagai Base Class (Layer 1)
+//buat kelas item
 class Item {
 private:
-    string id_Item;
-    string nama_Item;
-    double harga_item;
-    string deskripsi_Item;
+    string id_Item;        //buat id item
+    string nama_Item;      //buat nama item
+    double harga_item;     //buat harga item
+    string deskripsi_Item; //buat deskripsi item
 
 public:
-    // Konstruktor Default
+    //constructor default
     Item() {
         this->id_Item = "";
         this->nama_Item = "";
@@ -23,7 +19,7 @@ public:
         this->deskripsi_Item = "";
     }
 
-    // Konstruktor Berparameter Lengkap (tanpa atribut foto)
+    //constructor parametrik
     Item(string id, string nama, double harga, string deskripsi) {
         this->id_Item = id;
         this->nama_Item = nama;
@@ -31,35 +27,47 @@ public:
         this->deskripsi_Item = deskripsi;
     }
 
-    // ================= Setter =================
+    //buat setter id
     void setId(const string& id) {
         this->id_Item = id;
     }
+
+    //buat setter nama
     void setNama(const string& nama) {
         this->nama_Item = nama;
     }
+
+    //buat setter harga
     void setHarga(double harga) {
         this->harga_item = harga;
     }
+
+    //buat setter deskripsi
     void setDeskripsi(const string& deskripsi) {
         this->deskripsi_Item = deskripsi;
     }
 
-    // ================= Getter =================
+    //buat getter id
     string getId() const {
         return this->id_Item;
     }
+
+    //buat getter nama
     string getNama() const {
         return this->nama_Item;
     }
+
+    //buat getter harga
     double getHarga() const {
         return this->harga_item;
     }
+
+    //buat getter deskripsi
     string getDeskripsi() const {
         return this->deskripsi_Item;
     }
 
-    // Method menampilkan data Item
+    //buat show data
     void showData() const {
         cout << "ID Item        : " << this->id_Item << endl;
         cout << "Nama Item      : " << this->nama_Item << endl;
@@ -67,8 +75,6 @@ public:
         cout << "Deskripsi Item : " << this->deskripsi_Item << endl;
     }
 
-    // Destruktor
+    //destructor
     virtual ~Item() {}
 };
-
-#endif

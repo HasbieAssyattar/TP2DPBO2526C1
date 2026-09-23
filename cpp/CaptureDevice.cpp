@@ -1,27 +1,22 @@
-#pragma once
-#ifndef CAPTUREDEVICE_H
-#define CAPTUREDEVICE_H
-
 #include "Item.cpp"
 #include <bits/stdc++.h>
 
 using namespace std;
 
-// Kelas CaptureDevice merupakan turunan (inheritance) dari kelas Item
-// Struktur: Item -> CaptureDevice
+//buat kelas capture device
 class CaptureDevice : public Item {
 private:
-    string levelCap_CaptureDevice;
-    string type_CaptureDevice;
+    string levelCap_CaptureDevice; //buat level cap device
+    string type_CaptureDevice;     //buat tipe device
 
 public:
-    // Konstruktor Default
+    //constructor default
     CaptureDevice() : Item() {
-        this->levelCap_CaptureDevice = "";
-        this->type_CaptureDevice = "";
+        this->levelCap_CaptureDevice = ""; //kosongin
+        this->type_CaptureDevice = "";     //kosongin
     }
 
-    // Konstruktor Berparameter Lengkap (tanpa atribut foto, levelCap bertipe string)
+    //constructor parametrik
     CaptureDevice(string id, string nama, double harga, string deskripsi,
                   string levelCap, string type)
         : Item(id, nama, harga, deskripsi) {
@@ -29,50 +24,44 @@ public:
         this->type_CaptureDevice = type;
     }
 
-    // Setter untuk levelCap_CaptureDevice (bertipe string)
+    //buat setter level cap
     void setLevelCap_CaptureDevice(const string& levelCap) {
         this->levelCap_CaptureDevice = levelCap;
     }
-    // Alias sesuai diagram class
     void setLevelCap(const string& levelCap) {
         this->levelCap_CaptureDevice = levelCap;
     }
 
-    // Setter untuk type_CaptureDevice
+    //buat setter type device
     void setType_CaptureDevice(const string& type) {
         this->type_CaptureDevice = type;
     }
-    // Alias sesuai diagram class
     void setType(const string& type) {
         this->type_CaptureDevice = type;
     }
 
-    // Getter untuk levelCap_CaptureDevice (return string)
+    //buat getter level cap
     string getLevelCap_CaptureDevice() const {
         return this->levelCap_CaptureDevice;
     }
-    // Alias sesuai diagram class
     string getLevelCap() const {
         return this->levelCap_CaptureDevice;
     }
 
-    // Getter untuk type_CaptureDevice
+    //buat getter type device
     string getType_CaptureDevice() const {
         return this->type_CaptureDevice;
     }
-    // Alias sesuai diagram class
     string getType() const {
         return this->type_CaptureDevice;
     }
 
-    // Method untuk menampilkan informasi CaptureDevice
+    //buat nampilin data capture device
     void showDataCaptureDevice() const {
         cout << "Level Cap Device   : " << this->levelCap_CaptureDevice << endl;
         cout << "Type Device        : " << this->type_CaptureDevice << endl;
     }
 
-    // Destruktor
+    //destructor
     virtual ~CaptureDevice() {}
 };
-
-#endif

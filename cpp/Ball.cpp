@@ -1,29 +1,24 @@
-#pragma once
-#ifndef BALL_H
-#define BALL_H
-
 #include "CaptureDevice.cpp"
 #include <bits/stdc++.h>
 
 using namespace std;
 
-// Kelas Ball merupakan turunan (inheritance) dari kelas CaptureDevice
-// Struktur Inheritance: Item -> CaptureDevice -> Ball
+//buat kelas ball
 class Ball : public CaptureDevice {
 private:
-    string kondisi_Ball;
-    double multiplier_Ball;
-    int pastiDapet_Ball; // 1 = pasti dapet pokemon, 0 = tidak pasti dapet pokemon
+    string kondisi_Ball;    //buat nambah kondisi ball
+    double multiplier_Ball; //buat nambah multiplier ball
+    int pastiDapet_Ball;    //buat nambah pasti dapet ball
 
 public:
-    // 1. Konstruktor Default
+    //constructor default
     Ball() : CaptureDevice() {
-        this->kondisi_Ball = "";
+        this->kondisi_Ball = ""; //kosongin
         this->multiplier_Ball = 0.0;
         this->pastiDapet_Ball = 0;
     }
 
-    // 2. Konstruktor Berparameter Lengkap (tanpa atribut namaBall dan foto)
+    //constructor parametrik
     Ball(string id, string namaItem, double harga, string deskripsi,
          string levelCap, string typeDevice,
          string kondisiBall, double multiplierBall, int pastiDapetBall)
@@ -33,8 +28,7 @@ public:
         this->pastiDapet_Ball = pastiDapetBall;
     }
 
-    // ================= Setter =================
-    // Setter kondisi_Ball
+    //buat setter kondisi ball
     void setKondisi_Ball(const string& kondisiBall) {
         this->kondisi_Ball = kondisiBall;
     }
@@ -48,7 +42,7 @@ public:
         this->kondisi_Ball = kondisiBall;
     }
 
-    // Setter multiplier_Ball
+    //buat setter multiplier ball
     void setMultiplier_Ball(double multiplierBall) {
         this->multiplier_Ball = multiplierBall;
     }
@@ -59,7 +53,7 @@ public:
         this->multiplier_Ball = multiplierBall;
     }
 
-    // Setter pastiDapet_Ball (1 = pasti dapet, 0 = ga pasti dapet)
+    //buat setter pasti dapet ball
     void setPastiDapet_Ball(int pastiDapetBall) {
         this->pastiDapet_Ball = pastiDapetBall;
     }
@@ -70,8 +64,7 @@ public:
         this->pastiDapet_Ball = pastiDapetBall;
     }
 
-    // ================= Getter =================
-    // Getter kondisi_Ball
+    //buat getter kondisi ball
     string getKondisi_Ball() const {
         return this->kondisi_Ball;
     }
@@ -85,7 +78,7 @@ public:
         return this->kondisi_Ball;
     }
 
-    // Getter multiplier_Ball
+    //buat getter multiplier ball
     double getMultiplier_Ball() const {
         return this->multiplier_Ball;
     }
@@ -96,7 +89,7 @@ public:
         return this->multiplier_Ball;
     }
 
-    // Getter pastiDapet_Ball (int: 1 atau 0)
+    //buat getter pasti dapet ball
     int getPastiDapet_Ball() const {
         return this->pastiDapet_Ball;
     }
@@ -107,7 +100,7 @@ public:
         return this->pastiDapet_Ball;
     }
 
-    // Method mengecek keterangan status pasti dapat:
+    //buat cek keterangan status pasti dapat
     string getKeteranganPastiDapet() const {
         if (this->pastiDapet_Ball == 1) {
             return "Pasti dapat Pokemon";
@@ -116,19 +109,19 @@ public:
         }
     }
 
-    // Method pengecekan nilai (return boolean)
+    //buat cek pasti dapat
     bool cekPastiDapat() const {
         return (this->pastiDapet_Ball == 1);
     }
 
-    // Method untuk menampilkan atribut khusus Ball (tanpa namaBall)
+    //buat show data ball
     void showDataBall() const {
         cout << "Kondisi Ball       : " << this->kondisi_Ball << endl;
         cout << "Multiplier Ball    : " << fixed << setprecision(2) << this->multiplier_Ball << "x" << endl;
         cout << "Pasti Dapet        : " << (this->pastiDapet_Ball == 1 ? "1 (Pasti dapat Pokemon)" : "0 (Tidak pasti dapat Pokemon)") << endl;
     }
 
-    // Method menampilkan semua data dari Item, CaptureDevice, hingga Ball
+    //buat show data
     void showData() const {
         cout << "----------------------------------------" << endl;
         cout << "           DATA POKEBALL ITEM           " << endl;
@@ -142,8 +135,6 @@ public:
         cout << "----------------------------------------" << endl;
     }
 
-    // Destruktor
+    //destructor
     virtual ~Ball() {}
 };
-
-#endif
