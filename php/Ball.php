@@ -16,11 +16,12 @@ class Ball extends CaptureDevice {
         string $gambar = "",
         string $levelCap = "",
         string $type = "",
+        int $isUsable = 0,
         string $kondisi = "",
         float $multiplier = 0.0,
         int $pastiDapet = 0
     ) {
-        parent::__construct($id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type);
+        parent::__construct($id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable);
         $this->kondisi_Ball = $kondisi;
         $this->multiplier_Ball = $multiplier;
         $this->pastiDapet_Ball = $pastiDapet;

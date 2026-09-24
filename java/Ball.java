@@ -12,14 +12,21 @@ public class Ball extends CaptureDevice {
         this.pastiDapet_Ball = 0;
     }
 
-    // constructor parametrik
+    // constructor parametrik dengan isUsable
     public Ball(String id, String namaItem, double harga, String deskripsi,
-                String levelCap, String typeDevice,
+                String levelCap, String typeDevice, int isUsable,
                 String kondisiBall, double multiplierBall, int pastiDapetBall) {
-        super(id, namaItem, harga, deskripsi, levelCap, typeDevice);
+        super(id, namaItem, harga, deskripsi, levelCap, typeDevice, isUsable);
         this.kondisi_Ball = kondisiBall;
         this.multiplier_Ball = multiplierBall;
         this.pastiDapet_Ball = pastiDapetBall;
+    }
+
+    // constructor parametrik tanpa isUsable (default 0)
+    public Ball(String id, String namaItem, double harga, String deskripsi,
+                String levelCap, String typeDevice,
+                String kondisiBall, double multiplierBall, int pastiDapetBall) {
+        this(id, namaItem, harga, deskripsi, levelCap, typeDevice, 0, kondisiBall, multiplierBall, pastiDapetBall);
     }
 
     // buat setter kondisi ball

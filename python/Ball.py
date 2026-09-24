@@ -3,9 +3,9 @@ from CaptureDevice import CaptureDevice
 # buat kelas ball
 class Ball(CaptureDevice):
     def __init__(self, id_Item: str = "", nama_Item: str = "", harga_item: float = 0.0, deskripsi_Item: str = "",
-                 levelCap: str = "", typeDevice: str = "",
+                 levelCap: str = "", typeDevice: str = "", isUsable: int = 0,
                  kondisiBall: str = "", multiplierBall: float = 0.0, pastiDapetBall: int = 0):
-        super().__init__(id_Item, nama_Item, harga_item, deskripsi_Item, levelCap, typeDevice)
+        super().__init__(id_Item, nama_Item, harga_item, deskripsi_Item, levelCap, typeDevice, isUsable)
         self.__kondisi_Ball = str(kondisiBall)            # buat nambah kondisi ball
         self.__multiplier_Ball = float(multiplierBall)    # buat nambah multiplier ball
         self.__pastiDapet_Ball = int(pastiDapetBall)      # buat nambah pasti dapet ball

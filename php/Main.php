@@ -19,19 +19,40 @@ if (is_dir($imgDir)) {
 if (empty($daftarGambar)) {
     $daftarGambar = [
         "img/PokeBall.jpg" => "Poke Ball",
-        "img/GreatBall.jpg" => "Great Ball",
+        "img/DuskBall.jpg" => "Dusk Ball",
         "img/UltraBall.jpg" => "Ultra Ball",
+        "img/UltraBeastBall.jpg" => "Beast Ball",
         "img/MasterBall.jpg" => "Master Ball"
     ];
 }
 
-// inisialisasi 4 data pokeball awal dengan gambarnya
-if (!isset($_SESSION['daftarItem']) || empty($_SESSION['daftarItem'][0]->getGambar()) || $_SESSION['daftarItem'][0]->getKondisi_Ball() === 'Mulus') {
+// helper cari path foto pokeball (nama pokeball tanpa spasi + .jpg)
+function getFotoPokeball($nama, $gambarInput = '') {
+    $namaClean = str_replace(' ', '', $nama);
+    $imgDir = __DIR__ . '/img';
+    if (is_dir($imgDir)) {
+        $files = scandir($imgDir);
+        foreach ($files as $f) {
+            $base = pathinfo($f, PATHINFO_FILENAME);
+            if (strcasecmp($base, $namaClean) === 0) {
+                return "img/" . $f;
+            }
+        }
+    }
+    if (!empty($gambarInput) && file_exists(__DIR__ . '/' . $gambarInput)) {
+        return $gambarInput;
+    }
+    return "img/PokeBall.jpg";
+}
+
+// inisialisasi 5 data pokeball awal sesuai inputan fix
+if (!isset($_SESSION['daftarItem']) || count($_SESSION['daftarItem']) !== 5 || $_SESSION['daftarItem'][0]->getId() !== 'I01' || !method_exists($_SESSION['daftarItem'][0], 'getIsUsable')) {
     $_SESSION['daftarItem'] = [
-        new Ball("B01", "Pokeball Standard", 200, "Bola penangkap pokemon standar untuk pemula", "img/PokeBall.jpg", "Level 1 - 20", "Pokeball", "Kondisi standar / normal", 1.0, 0),
-        new Ball("B02", "Great Ball", 600, "Bola penangkap dengan catch rate lebih tinggi", "img/GreatBall.jpg", "Level 21 - 40", "Great Ball", "Kondisi standar (1.5x catch rate)", 1.5, 0),
-        new Ball("B03", "Ultra Ball", 1200, "Bola performa tinggi untuk pokemon kuat", "img/UltraBall.jpg", "Level 41 - 70", "Ultra Ball", "Kondisi standar (2.0x catch rate)", 2.0, 0),
-        new Ball("B04", "Master Ball", 50000, "Bola legendaris dengan peluang tangkap pasti dapat", "img/MasterBall.jpg", "No Limit (Semua Level)", "Master Ball", "Semua kondisi (pasti tertangkap 100%)", 255.0, 1)
+        new Ball("I01", "Pokeball", 100.0, "Hanya Pokeball Biasa Dengan Capture Rate 1.0x", "img/PokeBall.jpg", "-", "Pokeball", 0, "-", 1.0, 0),
+        new Ball("T02", "Dusk Ball", 150.0, "Hanya Pokeball Dengan Capture Rate 1.0x dan 2.0x Saat Malam", "img/DuskBall.jpg", "20", "Pokeball", 0, "Saat Malam 2.0x", 2.0, 0),
+        new Ball("T03", "Ultra Ball", 450.0, "Pokeball Dengan Capture Rate 3.0x", "img/UltraBall.jpg", "15", "Pokeball", 0, "-", 3.0, 0),
+        new Ball("T04", "Beast Ball", 700.0, "Pokeball Dengan Capture Rate 1.0x dan 5.0x Saat Ingin Menangkap Ultra Beast Pokemon", "img/BeastBall.jpg", "-", "Pokeball", 0, "Ultra Beast Pokemon 5.0x", 5.0, 0),
+        new Ball("T05", "Master Ball", 100000.0, "Pokeball Dengan Capure Rate 100%", "img/MasterBall.jpg", "-", "Pokeball", 0, "-", 1.0, 1)
     ];
 }
 
@@ -49,24 +70,24 @@ function cekId($id, $daftar) {
 }
 
 // buat tambah item
-function tambahItem(&$daftar, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $kondisi, $multiplier, $pastiDapet) {
+function tambahItem(&$daftar, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable, $kondisi, $multiplier, $pastiDapet) {
     if (cekId($id, $daftar)) return false;
-    $daftar[] = new Ball($id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $kondisi, $multiplier, $pastiDapet);
+    $gambar = getFotoPokeball($nama, $gambar);
+    $daftar[] = new Ball($id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable, $kondisi, $multiplier, $pastiDapet);
     return true;
 }
 
 // buat update item
-function updateItem(&$daftar, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $kondisi, $multiplier, $pastiDapet) {
+function updateItem(&$daftar, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable, $kondisi, $multiplier, $pastiDapet) {
     foreach ($daftar as $item) {
         if ($item->getId() === $id) {
             $item->setNama($nama);
             $item->setHarga($harga);
             $item->setDeskripsi($deskripsi);
-            if (!empty($gambar)) {
-                $item->setGambar($gambar);
-            }
+            $item->setGambar(getFotoPokeball($nama, $gambar));
             $item->setLevelCap($levelCap);
             $item->setType($type);
+            $item->setIsUsable($isUsable);
             $item->setKondisi_Ball($kondisi);
             $item->setMultiplier_Ball($multiplier);
             $item->setPastiDapet_Ball($pastiDapet);
@@ -96,7 +117,8 @@ function cariItem($daftar, $keyword) {
         if (str_contains(strtolower($item->getId()), $keyword) ||
             str_contains(strtolower($item->getNama()), $keyword) ||
             str_contains(strtolower($item->getType()), $keyword) ||
-            str_contains(strtolower($item->getLevelCap()), $keyword)) {
+            str_contains(strtolower($item->getLevelCap()), $keyword) ||
+            str_contains(strtolower($item->getKondisi_Ball()), $keyword)) {
             $hasil[] = $item;
         }
     }
@@ -106,6 +128,63 @@ function cariItem($daftar, $keyword) {
 // buat tampil semua
 function tampilSemua($daftar) {
     return $daftar;
+}
+
+// buat fungsi baru cetak tabel dinamis
+function cetakTabel($daftar) {
+    if (empty($daftar)) {
+        echo '<table><tr><td colspan="12" style="padding: 20px; color: #dc2626;">Data tidak ditemukan / masih kosong bro...</td></tr></table>';
+        return;
+    }
+
+    echo '<table>';
+    echo '<tr>
+            <th>No</th>
+            <th>Foto Pokeball</th>
+            <th>ID Item</th>
+            <th>Nama Item</th>
+            <th>Harga (Coin)</th>
+            <th>Deskripsi Item</th>
+            <th>Level Cap Device</th>
+            <th>Tipe Device</th>
+            <th>Bisa Dipakai Berkali-kali?</th>
+            <th>Kondisi Ball</th>
+            <th>Multiplier</th>
+            <th>Pasti Dapat?</th>
+          </tr>';
+
+    $no = 1;
+    foreach ($daftar as $b) {
+        $usableBadge = ($b->getIsUsable() === 1) 
+            ? '<span class="badge badge-success">Ya (Bisa Berkali-kali)</span>' 
+            : '<span class="badge badge-secondary">Tidak (Sekali Pakai)</span>';
+
+        $pastiBadge = ($b->getPastiDapet_Ball() === 1) 
+            ? '<span class="badge badge-success">Pasti (1)</span>' 
+            : '<span style="color: #64748b;">Tidak (0)</span>';
+        
+        $lvlCapBadge = htmlspecialchars($b->getLevelCap());
+        if ($lvlCapBadge !== '-') {
+            $lvlCapBadge = '<span class="badge badge-info">' . $lvlCapBadge . '</span>';
+        }
+
+        $fotoSrc = getFotoPokeball($b->getNama(), $b->getGambar());
+        echo '<tr>
+            <td>' . $no++ . '</td>
+            <td><img class="ball-img" src="' . htmlspecialchars($fotoSrc) . '" alt="' . htmlspecialchars($b->getNama()) . '" onerror="this.src=\'img/PokeBall.jpg\'"></td>
+            <td><strong>' . htmlspecialchars($b->getId()) . '</strong></td>
+            <td>' . htmlspecialchars($b->getNama()) . '</td>
+            <td>' . number_format($b->getHarga(), 0, ',', '.') . ' Coin</td>
+            <td style="text-align: left;">' . htmlspecialchars($b->getDeskripsi()) . '</td>
+            <td>' . $lvlCapBadge . '</td>
+            <td>' . htmlspecialchars($b->getType()) . '</td>
+            <td>' . $usableBadge . '</td>
+            <td>' . htmlspecialchars($b->getKondisi_Ball()) . '</td>
+            <td>' . number_format($b->getMultiplier_Ball(), 2) . 'x</td>
+            <td>' . $pastiBadge . '</td>
+        </tr>';
+    }
+    echo '</table>';
 }
 
 // reset data jika diminta
@@ -127,6 +206,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $gambar = trim($_POST['gambar'] ?? 'img/PokeBall.jpg');
         $levelCap = trim($_POST['levelCap']);
         $type = trim($_POST['type']);
+        $isUsable = intval($_POST['isUsable'] ?? 0);
         $kondisi = trim($_POST['kondisi']);
         $multiplier = floatval($_POST['multiplier']);
         $pastiDapet = intval($_POST['pastiDapet']);
@@ -141,7 +221,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $pesan = "Multiplier harus lebih dari 0!";
             $tipePesan = "error";
         } else {
-            tambahItem($daftarItem, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $kondisi, $multiplier, $pastiDapet);
+            tambahItem($daftarItem, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable, $kondisi, $multiplier, $pastiDapet);
             $pesan = "Pokeball berhasil ditambahkan!";
             $menu = 'tampil';
         }
@@ -154,6 +234,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         $gambar = trim($_POST['gambar'] ?? '');
         $levelCap = trim($_POST['levelCap']);
         $type = trim($_POST['type']);
+        $isUsable = intval($_POST['isUsable'] ?? 0);
         $kondisi = trim($_POST['kondisi']);
         $multiplier = floatval($_POST['multiplier']);
         $pastiDapet = intval($_POST['pastiDapet']);
@@ -168,7 +249,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $pesan = "Multiplier harus lebih dari 0!";
             $tipePesan = "error";
         } else {
-            updateItem($daftarItem, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $kondisi, $multiplier, $pastiDapet);
+            updateItem($daftarItem, $id, $nama, $harga, $deskripsi, $gambar, $levelCap, $type, $isUsable, $kondisi, $multiplier, $pastiDapet);
             $pesan = "Data Pokeball berhasil diupdate!";
             $menu = 'tampil';
         }
@@ -221,6 +302,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         .badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .badge-success { background-color: #dcfce7; color: #15803d; }
         .badge-info { background-color: #e0f2fe; color: #0369a1; }
+        .badge-secondary { background-color: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; }
         form { display: inline-block; background-color: white; padding: 22px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: left; width: 440px; margin-top: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
         fieldset { border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 12px; padding: 10px 14px; }
         legend { font-weight: bold; font-size: 12px; color: #2563eb; padding: 0 4px; }
@@ -256,58 +338,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     <!-- 1. TAMPIL SEMUA DATA -->
     <?php if ($menu === 'tampil'): ?>
         <h2>Daftar Semua Pokeball Item</h2>
-        <table>
-            <tr>
-                <th>No</th>
-                <th>Foto Pokeball</th>
-                <th>ID Item</th>
-                <th>Nama Item</th>
-                <th>Harga (Coin)</th>
-                <th>Deskripsi Item</th>
-                <th>Level Cap Device</th>
-                <th>Tipe Device</th>
-                <th>Kondisi Ball</th>
-                <th>Multiplier</th>
-                <th>Pasti Dapat?</th>
-            </tr>
-            <?php 
-                $data = tampilSemua($daftarItem);
-                if (empty($data)): 
-            ?>
-            <tr>
-                <td colspan="11" style="padding: 20px; color: #64748b;">Data masih kosong bro...</td>
-            </tr>
-            <?php 
-                else:
-                    $no = 1;
-                    foreach ($data as $b): 
-            ?>
-            <tr>
-                <td><?= $no++ ?></td>
-                <td>
-                    <img class="ball-img" src="<?= htmlspecialchars($b->getGambar()) ?>" alt="<?= htmlspecialchars($b->getNama()) ?>" onerror="this.src='img/PokeBall.jpg'">
-                </td>
-                <td><strong><?= htmlspecialchars($b->getId()) ?></strong></td>
-                <td><?= htmlspecialchars($b->getNama()) ?></td>
-                <td><?= number_format($b->getHarga(), 0, ',', '.') ?> Coin</td>
-                <td style="text-align: left;"><?= htmlspecialchars($b->getDeskripsi()) ?></td>
-                <td><span class="badge badge-info"><?= htmlspecialchars($b->getLevelCap()) ?></span></td>
-                <td><?= htmlspecialchars($b->getType()) ?></td>
-                <td><?= htmlspecialchars($b->getKondisi_Ball()) ?></td>
-                <td><?= number_format($b->getMultiplier_Ball(), 2) ?>x</td>
-                <td>
-                    <?php if ($b->getPastiDapet_Ball() === 1): ?>
-                        <span class="badge badge-success">Pasti (1)</span>
-                    <?php else: ?>
-                        <span style="color: #64748b;">Tidak (0)</span>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <?php 
-                    endforeach; 
-                endif; 
-            ?>
-        </table>
+        <?php cetakTabel($daftarItem); ?>
 
     <!-- 2. TAMBAH DATA POKEBALL -->
     <?php elseif ($menu === 'tambah'): ?>
@@ -344,6 +375,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 <input type="text" name="levelCap" placeholder="contoh: Level 50 ke atas / Bebas" required>
                 <label>Tipe Device:</label>
                 <input type="text" name="type" placeholder="Pokeball" required>
+                <label>Bisa Dipakai Berkali-kali? (Is Usable):</label>
+                <select name="isUsable">
+                    <option value="0">0 - Tidak (Sekali Pakai)</option>
+                    <option value="1">1 - Ya (Bisa Dipakai Berkali-kali)</option>
+                </select>
             </fieldset>
 
             <fieldset>
@@ -401,6 +437,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 <input type="text" name="levelCap" placeholder="level cap baru" required>
                 <label>Tipe Device Baru:</label>
                 <input type="text" name="type" placeholder="Pokeball" required>
+                <label>Bisa Dipakai Berkali-kali Baru? (Is Usable):</label>
+                <select name="isUsable">
+                    <option value="0">0 - Tidak (Sekali Pakai)</option>
+                    <option value="1">1 - Ya (Bisa Dipakai Berkali-kali)</option>
+                </select>
             </fieldset>
 
             <fieldset>
@@ -438,7 +479,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <h2>Cari Data Pokeball</h2>
         <form method="GET">
             <input type="hidden" name="menu" value="cari">
-            <label>Masukkan Kata Kunci (ID / Nama / Tipe Device):</label>
+            <label>Masukkan Kata Kunci (ID / Nama / Tipe Device / Kondisi):</label>
             <input type="text" name="keyword" value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>" placeholder="contoh: Ultra / Net / Malam" required>
             <button type="submit">Cari Data</button>
         </form>
@@ -446,44 +487,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         <?php if (isset($_GET['keyword'])): ?>
             <?php $hasil = cariItem($daftarItem, $_GET['keyword']); ?>
             <h3 style="margin-top: 30px;">Hasil Pencarian untuk: "<?= htmlspecialchars($_GET['keyword']) ?>"</h3>
-            <table>
-                <tr>
-                    <th>No</th>
-                    <th>Foto Pokeball</th>
-                    <th>ID Item</th>
-                    <th>Nama Item</th>
-                    <th>Harga (Coin)</th>
-                    <th>Deskripsi</th>
-                    <th>Level Cap</th>
-                    <th>Tipe Device</th>
-                    <th>Kondisi Ball</th>
-                    <th>Multiplier</th>
-                    <th>Pasti Dapat?</th>
-                </tr>
-                <?php if (empty($hasil)): ?>
-                <tr>
-                    <td colspan="11" style="padding: 20px; color: #dc2626;">Data tidak ditemukan!</td>
-                </tr>
-                <?php else: ?>
-                    <?php $no = 1; foreach ($hasil as $b): ?>
-                    <tr>
-                        <td><?= $no++ ?></td>
-                        <td>
-                            <img class="ball-img" src="<?= htmlspecialchars($b->getGambar()) ?>" alt="<?= htmlspecialchars($b->getNama()) ?>" onerror="this.src='img/PokeBall.jpg'">
-                        </td>
-                        <td><strong><?= htmlspecialchars($b->getId()) ?></strong></td>
-                        <td><?= htmlspecialchars($b->getNama()) ?></td>
-                        <td><?= number_format($b->getHarga(), 0, ',', '.') ?> Coin</td>
-                        <td style="text-align: left;"><?= htmlspecialchars($b->getDeskripsi()) ?></td>
-                        <td><span class="badge badge-info"><?= htmlspecialchars($b->getLevelCap()) ?></span></td>
-                        <td><?= htmlspecialchars($b->getType()) ?></td>
-                        <td><?= htmlspecialchars($b->getKondisi_Ball()) ?></td>
-                        <td><?= number_format($b->getMultiplier_Ball(), 2) ?>x</td>
-                        <td><?= $b->getPastiDapet_Ball() === 1 ? '<span class="badge badge-success">Pasti (1)</span>' : 'Tidak (0)' ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </table>
+            <?php cetakTabel($hasil); ?>
         <?php endif; ?>
 
     <!-- 6. CEK ID -->

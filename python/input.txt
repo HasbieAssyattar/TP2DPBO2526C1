@@ -1,0 +1,23 @@
+1
+T06
+Great Ball
+300.00
+Pokeball Dengan Capture Rate 2.0x
+-
+Pokeball
+0
+-
+2
+0
+1
+T07
+Love Ball
+200.00
+Pokeball Dengan Capture Rate 1.0x dan 2.0x  buat pokemon yang lawan jenis dengan pokemon di inventory
+-
+Pokeball
+0
+-
+2
+0
+5

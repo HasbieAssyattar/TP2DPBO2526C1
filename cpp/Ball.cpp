@@ -18,11 +18,21 @@ public:
         this->pastiDapet_Ball = 0;
     }
 
-    //constructor parametrik
+    //constructor parametrik dengan isUsable
+    Ball(string id, string namaItem, double harga, string deskripsi,
+         string levelCap, string typeDevice, int isUsable,
+         string kondisiBall, double multiplierBall, int pastiDapetBall)
+        : CaptureDevice(id, namaItem, harga, deskripsi, levelCap, typeDevice, isUsable) {
+        this->kondisi_Ball = kondisiBall;
+        this->multiplier_Ball = multiplierBall;
+        this->pastiDapet_Ball = pastiDapetBall;
+    }
+
+    //constructor parametrik tanpa isUsable (default 0)
     Ball(string id, string namaItem, double harga, string deskripsi,
          string levelCap, string typeDevice,
          string kondisiBall, double multiplierBall, int pastiDapetBall)
-        : CaptureDevice(id, namaItem, harga, deskripsi, levelCap, typeDevice) {
+        : CaptureDevice(id, namaItem, harga, deskripsi, levelCap, typeDevice, 0) {
         this->kondisi_Ball = kondisiBall;
         this->multiplier_Ball = multiplierBall;
         this->pastiDapet_Ball = pastiDapetBall;
