@@ -79,28 +79,28 @@ Sesuai dengan TP1 dan Juga TP2 jadi saat awal program dijalankan ada menu dan ad
 
 ## CPP
 ### Tampilan Menu
-<img src="Dokumentasi/cpp/Show.png" >
+<img src="dokumentasi/cpp/Show.png" >
 
 ### Add 
-<img src="Dokumentasi/cpp/Add.png" >
+<img src="dokumentasi/cpp/Add.png" >
 
 ## Java
 ### Tampilan Menu
-<img src="Dokumentasi/java/Show.png" >
+<img src="dokumentasi/java/Show.png" >
 
 ### Add
-<img src="Dokumentasi/java/Add.png" >
+<img src="dokumentasi/java/Add.png" >
 
 ## Python
 ### Tampilan Menu
-<img src="Dokumentasi/python/Show.png" >
+<img src="dokumentasi/python/Show.png" >
 
 ### Add
-<img src="Dokumentasi/python/Add.png" >
+<img src="dokumentasi/python/Add.png" >
 
 ## PHP
 ### Tampilan Menu
-<img src="Dokumentasi/php/Show.png" >
+<img src="dokumentasi/php/Show.png" >
 
 ### Add
-<img src="Dokumentasi/php/Add.png" >
+<img src="dokumentasi/php/Add.png" >
